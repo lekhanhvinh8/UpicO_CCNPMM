@@ -23,4 +23,9 @@ namespace Upico.Controllers.Resources
         public string AvatarUrl { get; set; }
         public bool isFollowed { get; set; }
     }
+
+    public class UserFilter
+    {
+        public bool? IsLocked { get; set; }
+    }
 }

@@ -21,6 +21,6 @@ namespace Upico.Core.Repositories
         public Task<AppUser> GetUserProfile(string username);
         Task Load(Expression<Func<AppUser, bool>> predicate);
 
-        public Task<List<AppUser>> GetAll();
+        public Task<List<AppUser>> GetAll(UserFilter filter);
     }
 }

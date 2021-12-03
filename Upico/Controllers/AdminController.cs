@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Upico.Controllers.Resources;
 using Upico.Core;
@@ -127,12 +129,12 @@ namespace Upico.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] string filter)
         {
-            var users = await this._unitOfWork.Users.GetAll();
             var lightWeightUsers = new List<Object>();
-            
 
+            var userFilter = string.IsNullOrEmpty(filter) ? null : JsonConvert.DeserializeObject<UserFilter>(WebUtility.UrlDecode(filter));
+            var users = await this._unitOfWork.Users.GetAll(userFilter);
 
             foreach (var user in users)
             {

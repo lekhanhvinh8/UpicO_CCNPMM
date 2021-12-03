@@ -97,8 +97,11 @@ namespace Upico.Persistence.Repositories
             await this._context.Users.Where(predicate).LoadAsync();
         }
 
-        public async Task<List<AppUser>> GetAll()
+        public async Task<List<AppUser>> GetAll(UserFilter filter)
         {
+            if (filter.IsLocked != null)
+                return await this._context.Users.Where(u => u.isLock == (bool)filter.IsLocked).ToListAsync();
+
             return await this._context.Users.ToListAsync();
         }
     }
