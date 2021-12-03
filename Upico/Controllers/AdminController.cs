@@ -133,15 +133,18 @@ namespace Upico.Controllers
             var lightWeightUsers = new List<Object>();
             foreach (var user in users)
             {
-                lightWeightUsers.Add(new { 
-                    userId= user.Id,
-                    userName= user.UserName,
-                    bio = user.Bio,
-                    displayName = user.DisplayName,
-                    email = user.Email,
-                    isLocked = user.isLock,
-                });
+                if(user.UserName != "admin")
+                    lightWeightUsers.Add(new { 
+                        userId= user.Id,
+                        userName= user.UserName,
+                        bio = user.Bio,
+                        displayName = user.DisplayName,
+                        email = user.Email,
+                        isLocked = user.isLock,
+                    });
             }
+
+            Response.Headers.Add("Content-Range", "user 0-1/" + lightWeightUsers.Count);
             return Ok(lightWeightUsers);
         }
 
