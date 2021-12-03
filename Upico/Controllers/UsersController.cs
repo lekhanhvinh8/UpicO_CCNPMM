@@ -42,6 +42,10 @@ namespace Upico.Controllers
             if (response == null)
                 return BadRequest("Tài khoản hoặc mật khẩu không chính xác");
 
+            var user = await this._unitOfWork.Users.GetUser(response.UserName);
+            if (user.isLock)
+                return BadRequest("Tài khoản đã bị khóa bởi Admin");
+
             return Ok(response);
         }
 

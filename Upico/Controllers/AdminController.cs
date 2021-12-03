@@ -131,17 +131,30 @@ namespace Upico.Controllers
         {
             var users = await this._unitOfWork.Users.GetAll();
             var lightWeightUsers = new List<Object>();
+            
+
+
             foreach (var user in users)
             {
-                if(user.UserName != "admin")
-                    lightWeightUsers.Add(new { 
-                        id= user.Id,
-                        userName= user.UserName,
-                        bio = user.Bio,
-                        displayName = user.DisplayName,
-                        email = user.Email,
-                        isLocked = user.isLock,
-                    });
+                var avatars = await this._unitOfWork.Avatars.GetAvatars(user.UserName);
+                var avatarUrl = "";
+
+                if (avatars.Where(a => a.IsMain).Count() != 0)
+                {
+                    avatarUrl = avatars.Where(a => a.IsMain).ToList()[0].Path;
+                }
+
+
+                if (user.UserName != "admin")
+                lightWeightUsers.Add(new { 
+                    id= user.Id,
+                    userName= user.UserName,
+                    bio = user.Bio,
+                    displayName = user.DisplayName,
+                    email = user.Email,
+                    isLocked = user.isLock,
+                    avatarUrl = avatarUrl,
+                });
             }
 
             Response.Headers.Add("Content-Range", "user 0-1/" + lightWeightUsers.Count);
