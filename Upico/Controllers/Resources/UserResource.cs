@@ -27,5 +27,6 @@ namespace Upico.Controllers.Resources
     public class UserFilter
     {
         public bool? IsLocked { get; set; }
+        public string UserName { get; set; }
     }
 }
