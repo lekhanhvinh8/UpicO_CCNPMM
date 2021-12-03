@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.15.1" />
+    <PackageReference Include="mailkit" Version="2.12.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.4" />
+    <PackageReference Include="automapper" Version="10.1.1" />
+    <PackageReference Include="Automapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="microsoft.aspnetcore.identity.entityframeworkcore" Version="5.0.5" />
+    <PackageReference Include="microsoft.entityframeworkcore.sqlserver" Version="5.0.5" />
+    <PackageReference Include="microsoft.entityframeworkcore.tools" Version="5.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="mimekit" Version="2.12.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+</Project>
