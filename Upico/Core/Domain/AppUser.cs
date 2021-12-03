@@ -11,6 +11,7 @@ namespace Upico.Core.Domain
         public string FullName { set; get; }
         public string DisplayName { get; set; }
         public string Bio { get; set; }
+        public bool isLock { get; set; } 
         public IList<Post> Posts { set; get; }
         public IList<Avatar> Avatars { get; set; }
         public IList<Comment> Comments { get; set; }

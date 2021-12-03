@@ -125,5 +125,36 @@ namespace Upico.Controllers
 
             return Ok();
         }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await this._unitOfWork.Users.GetAll();
+            var lightWeightUsers = new List<Object>();
+            foreach (var user in users)
+            {
+                lightWeightUsers.Add(new { 
+                    userId= user.Id,
+                    userName= user.UserName,
+                    bio = user.Bio,
+                    displayName = user.DisplayName,
+                    email = user.Email,
+                    isLocked = user.isLock,
+                });
+            }
+            return Ok(lightWeightUsers);
+        }
+
+        [HttpPut("UpdateUserStatus")]
+
+        public async Task<IActionResult> ModifyUserStatus(string userName, bool isLock)
+        {
+            var user = await this._unitOfWork.Users.GetUser(userName);
+            user.isLock = isLock;
+            await this._unitOfWork.Complete();
+
+            return Ok();
+        }
+
     }
 }

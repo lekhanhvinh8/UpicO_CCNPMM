@@ -96,5 +96,10 @@ namespace Upico.Persistence.Repositories
         {
             await this._context.Users.Where(predicate).LoadAsync();
         }
+
+        public async Task<List<AppUser>> GetAll()
+        {
+            return await this._context.Users.ToListAsync();
+        }
     }
 }

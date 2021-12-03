@@ -20,5 +20,7 @@ namespace Upico.Core.Repositories
         public Task LoadFollowers(string username);
         public Task<AppUser> GetUserProfile(string username);
         Task Load(Expression<Func<AppUser, bool>> predicate);
+
+        public Task<List<AppUser>> GetAll();
     }
 }
