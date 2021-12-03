@@ -135,7 +135,7 @@ namespace Upico.Controllers
             {
                 if(user.UserName != "admin")
                     lightWeightUsers.Add(new { 
-                        userId= user.Id,
+                        id= user.Id,
                         userName= user.UserName,
                         bio = user.Bio,
                         displayName = user.DisplayName,
