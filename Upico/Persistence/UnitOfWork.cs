@@ -18,7 +18,8 @@ namespace Upico.Persistence
             IPostRepository postRepository,
             IPostedImageRepository postedImageRepository,
             ICommentRepository commentRepository,
-            IReportedPostRepository reportedPostRepository)
+            IReportedPostRepository reportedPostRepository,
+            IMessageHubRepository messageHubRepository)
         {
             //a data context that be injected in runtime is the same for both UnitOfWork and CustomRepository
 
@@ -33,6 +34,7 @@ namespace Upico.Persistence
             PostedImages = postedImageRepository;
             Comments = commentRepository;
             ReportedPosts = reportedPostRepository;
+            MessageHubs = messageHubRepository;
         }
 
         public IAvatarRepository Avatars { get; private set; }
@@ -41,6 +43,7 @@ namespace Upico.Persistence
         public IPostedImageRepository PostedImages { get; private set; }
         public ICommentRepository Comments { get; private set; }
         public IReportedPostRepository ReportedPosts { get; set; }
+        public IMessageHubRepository MessageHubs { get; set; }
         public async Task<int> Complete()
         {
             return await this._context.SaveChangesAsync();

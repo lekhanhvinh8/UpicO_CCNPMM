@@ -18,6 +18,8 @@ using Upico.Core.Services;
 using Upico.Persistence.Service;
 using Upico.Core.StaticValues;
 using Microsoft.AspNetCore.Mvc;
+using Upico.Controllers.SignalR;
+using System.Threading.Tasks;
 
 namespace Upico
 {
@@ -38,10 +40,10 @@ namespace Upico
 
                 options.AddPolicy(name: _myAllowSpecificOrigins,
                     builder => {
-                        builder.WithOrigins("http://localhost:5000", "http://localhost:3000")
-                            .AllowAnyOrigin()
+                        builder.WithOrigins("http://localhost:5000", "http://localhost:3000", "http://localhost:3001")
                             .AllowAnyMethod()
                             .AllowAnyHeader()
+                            .AllowCredentials()
                             .WithExposedHeaders("Content-Range");
 
                     });
@@ -84,9 +86,13 @@ namespace Upico
             services.AddScoped<IPostedImageRepository, PostedImageRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IReportedPostRepository, ReportedPostRepository>();
+            services.AddScoped<IMessageHubRepository, MessageHubRepository>();
 
             //For auto mapper
             services.AddAutoMapper(typeof(Startup));
+
+            //For signalR
+            services.AddSignalR();
 
             //Default
             services.AddControllers();
@@ -161,6 +167,20 @@ namespace Upico
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
             
             /*
@@ -213,6 +233,7 @@ namespace Upico
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

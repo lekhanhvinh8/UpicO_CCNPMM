@@ -56,6 +56,14 @@ namespace Upico.Mapping
             CreateMap<ReportResource, Report>()
                 .ForMember(r => r.PostId, opt => opt.MapFrom(rr => new Guid(rr.Id)))
                 .ForMember(r => r.DateCreated, opt => opt.MapFrom(rr => DateTime.Now));
+
+            CreateMap<Message, MessageResource>()
+                .ForMember(mr => mr.SenderUserName, opt => opt.MapFrom(m => m.MessageHub.Sender.UserName))
+                .ForMember(mr => mr.SenderId, opt => opt.MapFrom(m => m.MessageHub.SenderId));
+
+            CreateMap<MessageHub, MessageHubResource>()
+                .ForMember(mhr => mhr.ReceiverUserName, opt => opt.MapFrom(mh => mh.Receiver.UserName));
+
         }
         private void MapChildren(Comment comment, CommentResouce commentResouce)
         {

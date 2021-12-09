@@ -14,6 +14,8 @@ namespace Upico.Persistence
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostedImage> PostImages { get; set; }
         public DbSet<Report> ReportedPosts { get; set; }
+        public DbSet<MessageHub> MessageHubs { get; set; }
+        public DbSet<Message> Messages { get; set; }
         public UpicODbContext(DbContextOptions<UpicODbContext> options)
             :base(options)
         {
@@ -29,6 +31,8 @@ namespace Upico.Persistence
             builder.ApplyConfiguration(new PostImageConfigurations());
             builder.ApplyConfiguration(new AppUserConfiguration());
             builder.ApplyConfiguration(new ReportedPostConfiguration());
+            builder.ApplyConfiguration(new MessageHubConfigurations());
+            builder.ApplyConfiguration(new MessageConfiguration());
         }
     }
 }

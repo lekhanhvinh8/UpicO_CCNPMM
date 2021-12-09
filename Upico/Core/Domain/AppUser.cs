@@ -19,6 +19,8 @@ namespace Upico.Core.Domain
         public IList<AppUser> Followers { get; set; }
         public IList<AppUser> Followings { get; set; }
         public IList<Report> Reports { get; set; }
+        public IList<MessageHub> SenderMessageHubs { get; set; }
+        public IList<MessageHub> ReceiverMessageHubs { get; set; }
         public AppUser()
         {
             Posts = new List<Post>();
@@ -28,6 +30,8 @@ namespace Upico.Core.Domain
             Followers = new List<AppUser>();
             Followings = new List<AppUser>();
             Reports = new List<Report>();
+            SenderMessageHubs = new List<MessageHub>();
+            ReceiverMessageHubs = new List<MessageHub>();
         }
     }
 }

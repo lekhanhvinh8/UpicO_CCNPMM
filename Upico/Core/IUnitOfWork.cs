@@ -14,6 +14,7 @@ namespace Upico.Core
         IPostedImageRepository PostedImages { get; }
         ICommentRepository Comments { get; }
         IReportedPostRepository ReportedPosts { get; }
+        IMessageHubRepository MessageHubs { get; }
         Task<int> Complete();
     }
 }

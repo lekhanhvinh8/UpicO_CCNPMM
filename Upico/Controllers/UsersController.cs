@@ -85,6 +85,18 @@ namespace Upico.Controllers
                 return BadRequest();
 
             follower.Followings.Add(following);
+
+
+            //creating message hub
+            if(await this._unitOfWork.MessageHubs.SingleOrDefault(mh => mh.SenderId == follower.Id && mh.ReceiverId == following.Id) == null)
+            {
+                await this._unitOfWork.MessageHubs.CreateMessageHub(follower.Id, following.Id);
+            }
+            if (await this._unitOfWork.MessageHubs.SingleOrDefault(mh => mh.SenderId == following.Id && mh.ReceiverId == follower.Id) == null)
+            {
+                await this._unitOfWork.MessageHubs.CreateMessageHub(following.Id, follower.Id);
+            }
+
             await this._unitOfWork.Complete();
 
             return Ok();
@@ -126,6 +138,25 @@ namespace Upico.Controllers
             var result = await this._userService.IsFollowed(follower.UserName, following.UserName);
 
             return Ok(result);
+        }
+
+        [HttpGet("messageHubs")]
+        public async Task<IActionResult> GetMessageHubs()
+        {
+            var user = await this._unitOfWork.Users.GetUser(User.Identity.Name);
+            if (user == null)
+                return NotFound("");
+
+            var messageHubs = await this._unitOfWork.MessageHubs.GetMessageHubs(user.Id);
+            var response = messageHubs.Select(m => new
+            {
+                m.Id,
+                m.SenderId,
+                m.ReceiverId,
+                m.CreatedAt,
+            }).ToList();
+
+            return Ok(response);
         }
 
         [HttpGet]
