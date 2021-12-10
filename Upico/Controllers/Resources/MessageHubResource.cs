@@ -12,6 +12,7 @@ namespace Upico.Controllers.Resources
         public string SenderId { get; set; }
         public string ReceiverId { get; set; }
         public string ReceiverUserName { get; set; }
+        public string ReceiverAvatarUrl { get; set; }
         public IList<MessageResource> Messages { get; set; }
         public MessageHubResource()
         {

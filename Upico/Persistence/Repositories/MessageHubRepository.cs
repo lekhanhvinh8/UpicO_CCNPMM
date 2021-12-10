@@ -27,6 +27,13 @@ namespace Upico.Persistence.Repositories
                 .ToListAsync();
             await this._context.Users.SingleOrDefaultAsync(u => u.Id == userId);
 
+            //Load ReceiverAvatar
+            foreach (var messageHub in messageHubs)
+            {
+                await this._context.Users.SingleOrDefaultAsync(u => u.Id == messageHub.ReceiverId);
+                await this._context.Avatars.Where(a => a.UserID == messageHub.ReceiverId && a.IsMain).LoadAsync();
+            }
+
             return messageHubs;
 
         }
@@ -36,6 +43,10 @@ namespace Upico.Persistence.Repositories
             var messageHub = await this._context.MessageHubs.Include(mh => mh.Messages).SingleOrDefaultAsync(mh => mh.SenderId == senderId && mh.ReceiverId == receiverId);
             await this._context.Users.SingleOrDefaultAsync(u => u.Id == senderId);
             await this._context.Users.SingleOrDefaultAsync(u => u.Id == receiverId);
+
+            //Load ReceiverAvatar
+            await this._context.Avatars.Where(a => a.UserID == receiverId && a.IsMain).LoadAsync();
+
 
             return messageHub;
 

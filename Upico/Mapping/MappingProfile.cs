@@ -62,7 +62,8 @@ namespace Upico.Mapping
                 .ForMember(mr => mr.SenderId, opt => opt.MapFrom(m => m.MessageHub.SenderId));
 
             CreateMap<MessageHub, MessageHubResource>()
-                .ForMember(mhr => mhr.ReceiverUserName, opt => opt.MapFrom(mh => mh.Receiver.UserName));
+                .ForMember(mhr => mhr.ReceiverUserName, opt => opt.MapFrom(mh => mh.Receiver.UserName))
+                .ForMember(mhr => mhr.ReceiverAvatarUrl, opt => opt.MapFrom(mh => mh.Receiver.Avatars.FirstOrDefault(a => a.IsMain) != null ? mh.Receiver.Avatars.FirstOrDefault(a => a.IsMain).Path : null));
 
         }
         private void MapChildren(Comment comment, CommentResouce commentResouce)
