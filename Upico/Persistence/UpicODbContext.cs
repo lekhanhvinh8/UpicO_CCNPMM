@@ -16,6 +16,7 @@ namespace Upico.Persistence
         public DbSet<Report> ReportedPosts { get; set; }
         public DbSet<MessageHub> MessageHubs { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<AccessLog> AccessLogs { get; set; }
         public UpicODbContext(DbContextOptions<UpicODbContext> options)
             :base(options)
         {

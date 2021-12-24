@@ -17,6 +17,10 @@ namespace Upico.Persistence.EntityConfigurations
 
             builder.HasMany(u => u.Likes)
                 .WithMany(p => p.Likes).UsingEntity(a => a.ToTable("Likes"));
+
+            builder.HasMany(u => u.AccessLogs)
+                .WithOne(a => a.User)
+                .HasForeignKey(a => a.UserId);
         }
     }
 }

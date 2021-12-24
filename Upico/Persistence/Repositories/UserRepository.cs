@@ -99,7 +99,7 @@ namespace Upico.Persistence.Repositories
 
         public async Task<List<AppUser>> GetAll(UserFilter filter)
         {
-            var users = await this._context.Users.ToListAsync();
+            var users = await this._context.Users.OrderByDescending(u => u.CreatedAt).Take(100).ToListAsync();
 
             if (filter != null)
             {
@@ -111,6 +111,11 @@ namespace Upico.Persistence.Repositories
             }
 
             return users;
+        }
+
+        public async Task<int> Count()
+        {
+            return await this._context.Users.CountAsync();
         }
     }
 }

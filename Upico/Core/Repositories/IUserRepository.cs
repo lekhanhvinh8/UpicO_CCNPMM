@@ -22,5 +22,6 @@ namespace Upico.Core.Repositories
         Task Load(Expression<Func<AppUser, bool>> predicate);
 
         public Task<List<AppUser>> GetAll(UserFilter filter);
+        public Task<int> Count();
     }
 }

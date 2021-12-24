@@ -13,6 +13,8 @@ namespace Upico.Controllers.Resources
         public Guid MessageHubId { get; set; }
         public string SenderUserName { get; set; }
         public string SenderId { get; set; }
+        public bool IsWithDraw { get; set; }
+
 
     }
 }

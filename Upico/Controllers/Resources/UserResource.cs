@@ -22,6 +22,8 @@ namespace Upico.Controllers.Resources
         public int Posts { get; set; }
         public string AvatarUrl { get; set; }
         public bool isFollowed { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime LastAccessed { get; set; }
     }
 
     public class UserFilter

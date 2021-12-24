@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Upico.Controllers.Resources;
 using Upico.Core;
 using Upico.Core.Domain;
+using Upico.Core.ServiceResources;
 using Upico.Core.Services;
 using Upico.Core.StaticValues;
 
@@ -24,13 +25,15 @@ namespace Upico.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
+        private readonly IAdminService _adminService;
 
-        public AdminController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper, IPhotoService photoService)
+        public AdminController(IUserService userService, IUnitOfWork unitOfWork, IMapper mapper, IPhotoService photoService, IAdminService adminService)
         {
             this._userService = userService;
             this._unitOfWork = unitOfWork;
             this._mapper = mapper;
             this._photoService = photoService;
+            this._adminService = adminService;
         }
 
         [HttpGet("reports")]
@@ -171,6 +174,83 @@ namespace Upico.Controllers
             user.isLock = isLock;
             await this._unitOfWork.Complete();
 
+            return Ok();
+        }
+
+        [HttpGet("DashboardInfo")]
+        public async Task<IActionResult> GetDashboardInfo()
+        {
+            var totalPosts = await this._unitOfWork.Posts.Count();
+            var totalComments = await this._unitOfWork.Comments.Count();
+            var totalUsers = await this._unitOfWork.Users.Count();
+            var totalMessages = await this._adminService.CountMessage();
+            var totalLikes = await this._adminService.CountLike();
+            var totalAccess = await this._adminService.CountAccess();
+            var newUsers = await this._adminService.GetNewUser(10);
+            var onlineUsers = await this._adminService.GetOnlineUser(10);
+
+
+            return Ok(
+                new { 
+                    totalPosts, 
+                    totalComments, 
+                    totalUsers, 
+                    totalMessages, 
+                    totalLikes, 
+                    totalAccess, 
+                    newUsers = this._mapper.Map<IList<UserResource>>(newUsers), 
+                    onlineUsers = this._mapper.Map<IList<UserResource>>(onlineUsers),
+                });
+        }
+
+        [HttpGet("GetDateAccessCount")]
+        public async Task<IActionResult> GetDateAccessCount (DateTime date)
+        {
+            return Ok(await this._adminService.GetDateAccessCount(date));
+        }
+
+        [HttpGet("GetMonthAccessCount")]
+        public async Task<IActionResult> GetMonthAccessCount (DateTime date)
+        {
+            return Ok(await this._adminService.GetMonthAccessCount(date));
+        }
+
+        [HttpGet("GetYearAccessCount")]
+        public async Task<IActionResult> GetYearAccessCount (DateTime date)
+        {
+            return Ok(await this._adminService.GetYearAccessCount(date));
+        }
+
+
+        [HttpGet("GetDateNewUsersCount")]
+        public async Task<IActionResult> GetDateNewUsersCount(DateTime date)
+        {
+            return Ok(await this._adminService.GetDateNewUsers(date));
+        }
+
+        [HttpGet("GetMonthNewUsersCount")]
+        public async Task<IActionResult> GetMonthNewUsersCount(DateTime date)
+        {
+            return Ok(await this._adminService.GetMonthNewUsers(date));
+        }
+
+        [HttpGet("GetYearNewUsersCount")]
+        public async Task<IActionResult> GetYearNewUsersCount(DateTime date)
+        {
+            return Ok(await this._adminService.GetYearNewUsers(date));
+        }
+
+        [HttpGet("GenerateAccessData")]
+        public async Task<IActionResult> GenerateAccessData(string username, DateTime date, string mode, int numberOfData)
+        {
+            await this._adminService.GenerateAccessData(username, date, mode, numberOfData);
+            return Ok();
+        }
+
+        [HttpGet("GenerateAccountData")]
+        public async Task<IActionResult> GenerateAccountData(DateTime date, string mode, int numberOfData)
+        {
+            await this._adminService.GenerateAccountData( date,  mode,  numberOfData);
             return Ok();
         }
 

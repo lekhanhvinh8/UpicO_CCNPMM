@@ -20,6 +20,8 @@ using Upico.Core.StaticValues;
 using Microsoft.AspNetCore.Mvc;
 using Upico.Controllers.SignalR;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace Upico
 {
@@ -78,6 +80,7 @@ namespace Upico
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             // the context that pass to AvatarRepository and UnitOfWork in runtime is the same object.
             services.AddScoped<IAvatarRepository, AvatarRepository>();
@@ -229,6 +232,55 @@ namespace Upico
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.Use(async (context, next) => {
+                await next.Invoke();
+                //handle response
+                //you may also need to check the request path to check whether it requests image
+                if (context.User.Identity.IsAuthenticated)
+                {
+                    var userName = context.User.Identity.Name;
+                    //retrieve uer by userName
+                    using (var dbContext = context.RequestServices.GetRequiredService<UpicODbContext>())
+                    {
+                        var user = dbContext.Users.Where(u => u.UserName == userName).FirstOrDefault();
+                        var now = DateTime.Now;
+
+                        if((now - user.LastAccessed).TotalSeconds > 60)
+                        {
+                            user.AccessCount += 1;
+
+                            //log access
+                            var accessLog = new AccessLog();
+                            accessLog.UserId = user.Id;
+                            accessLog.LogTime = now;
+
+                            dbContext.AccessLogs.Add(accessLog);
+
+                            /*var lastAccess = await dbContext.AccessLogs
+                                .Where(a => a.UserId == user.Id)
+                                .OrderByDescending(a => a.LogTime)
+                                .FirstOrDefaultAsync();
+
+                            if(lastAccess != null)
+                            {
+                                var distance = (now - lastAccess.LogTime).TotalSeconds;
+                                if(distance > 1)
+                                    dbContext.AccessLogs.Add(accessLog);
+
+                            }
+                            else
+                            {
+                                dbContext.AccessLogs.Add(accessLog);
+                            }*/
+                        }
+
+                        user.LastAccessed = now;
+                        dbContext.Update(user);
+                        dbContext.SaveChanges();
+                    }
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {

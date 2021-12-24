@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Upico.Controllers.Resources;
 using Upico.Core;
 using Upico.Core.Domain;
+using Upico.Persistence;
 
 namespace Upico.Controllers.SignalR
 {
@@ -14,10 +16,12 @@ namespace Upico.Controllers.SignalR
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ChatHub(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly UpicODbContext _context; // it's a temporary solution.
+        public ChatHub(IUnitOfWork unitOfWork, IMapper mapper, UpicODbContext context)
         {
             this._unitOfWork = unitOfWork;
             this._mapper = mapper;
+            this._context = context;
         }
 
         public async Task SendMessage(SendMessageResource sendMessageResource)
@@ -52,6 +56,26 @@ namespace Upico.Controllers.SignalR
 
             }
         }
+        public async Task WithdrawnMessage(string messageId)
+        {
+            var context = Context.GetHttpContext();
+            var userName = context.User.Identity.Name;
+
+            var message = await this._context.Messages.SingleOrDefaultAsync(m => m.Id == new Guid(messageId));
+            if (message == null)
+                return ;
+
+            var messageHub = await this._context.MessageHubs.SingleOrDefaultAsync(m => m.Id == message.MessageHubId);
+
+            message.IsWithDraw = true;
+
+            await this._context.SaveChangesAsync();
+
+            var messageResource = this._mapper.Map<MessageResource>(message);
+            messageResource.Content = null;
+            await Clients.Group(messageHub.SenderId).SendAsync("WithdrawnMessage", messageResource);
+            await Clients.Group(messageHub.ReceiverId).SendAsync("WithdrawnMessage", messageResource);
+        }
         public override async Task OnConnectedAsync()
         {
             var context = Context.GetHttpContext();
@@ -73,6 +97,13 @@ namespace Upico.Controllers.SignalR
 
                     var concatMessageResources = senderMessageHubResource.Messages.Concat(receiverMessageHubResource.Messages).OrderBy(m => m.CreatedAt).ToList();
 
+                    foreach (var messageResource in concatMessageResources)
+                    {
+                        if (messageResource.IsWithDraw)
+                        {
+                            messageResource.Content = null;
+                        }
+                    }
                     senderMessageHubResource.Messages = concatMessageResources;
                 }
 

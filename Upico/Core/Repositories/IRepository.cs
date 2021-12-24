@@ -17,5 +17,6 @@ namespace Upico.Core.Repositories
         void Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
         Task Load(Expression<Func<TEntity, bool>> predicate);
+        public Task<int> Count();
     }
 }

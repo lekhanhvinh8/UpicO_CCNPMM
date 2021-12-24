@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Upico.Persistence;
 
 namespace Upico.Migrations
 {
     [DbContext(typeof(UpicODbContext))]
-    partial class UpicODbContextModelSnapshot : ModelSnapshot
+    [Migration("20211223043550_AddLastAccessedToUserTable")]
+    partial class AddLastAccessedToUserTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,33 +182,10 @@ namespace Upico.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Upico.Core.Domain.AccessLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("LogTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AccessLogs");
-                });
-
             modelBuilder.Entity("Upico.Core.Domain.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessCount")
-                        .HasColumnType("int");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -217,9 +196,6 @@ namespace Upico.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -361,9 +337,6 @@ namespace Upico.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsWithDraw")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("MessageHubId")
                         .HasColumnType("uniqueidentifier");
@@ -547,15 +520,6 @@ namespace Upico.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Upico.Core.Domain.AccessLog", b =>
-                {
-                    b.HasOne("Upico.Core.Domain.AppUser", "User")
-                        .WithMany("AccessLogs")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Upico.Core.Domain.Avatar", b =>
                 {
                     b.HasOne("Upico.Core.Domain.AppUser", "AppUser")
@@ -654,8 +618,6 @@ namespace Upico.Migrations
 
             modelBuilder.Entity("Upico.Core.Domain.AppUser", b =>
                 {
-                    b.Navigation("AccessLogs");
-
                     b.Navigation("Avatars");
 
                     b.Navigation("Comments");

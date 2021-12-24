@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Upico.Persistence;
 
 namespace Upico.Migrations
 {
     [DbContext(typeof(UpicODbContext))]
-    partial class UpicODbContextModelSnapshot : ModelSnapshot
+    [Migration("20211223104713_AddAccessLogsTableAndDateCreatedForAppUser")]
+    partial class AddAccessLogsTableAndDateCreatedForAppUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -361,9 +363,6 @@ namespace Upico.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsWithDraw")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("MessageHubId")
                         .HasColumnType("uniqueidentifier");

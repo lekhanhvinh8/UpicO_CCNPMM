@@ -59,5 +59,9 @@ namespace Upico.Persistence.Repositories
         {
             return await this._entities.SingleOrDefaultAsync(predicate);
         }
+
+        public async Task<int> Count(){
+            return await this._entities.CountAsync();
+        }
     }
 }

@@ -21,6 +21,10 @@ namespace Upico.Core.Domain
         public IList<Report> Reports { get; set; }
         public IList<MessageHub> SenderMessageHubs { get; set; }
         public IList<MessageHub> ReceiverMessageHubs { get; set; }
+        public DateTime LastAccessed { get; set; }
+        public int AccessCount { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public IList<AccessLog> AccessLogs { get; set; }
         public AppUser()
         {
             Posts = new List<Post>();
@@ -32,6 +36,7 @@ namespace Upico.Core.Domain
             Reports = new List<Report>();
             SenderMessageHubs = new List<MessageHub>();
             ReceiverMessageHubs = new List<MessageHub>();
+            AccessLogs = new List<AccessLog>();
         }
     }
 }

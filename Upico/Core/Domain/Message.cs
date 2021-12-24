@@ -13,5 +13,6 @@ namespace Upico.Core.Domain
 
         public Guid MessageHubId { get; set; }
         public MessageHub MessageHub { get; set; }
+        public bool IsWithDraw { get; set; }
     }
 }
